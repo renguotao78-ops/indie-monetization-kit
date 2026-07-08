@@ -1,0 +1,37 @@
+# 可直接复制使用的变现工作流模板
+# 适用于任何数字产品的自动化发布和销售
+
+name: Product Release & Notify
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build & Package
+        run: |
+          mkdir -p dist
+          # 在这里改成你的构建命令
+          echo "Building your digital product..."
+          zip -r dist/product.zip . -x ".git/*" -x "node_modules/*"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: dist/product.zip
+
+      - name: Notify Buyers
+        run: |
+          echo "📢 新版本已发布！"
+          # 添加你的 webhook 通知逻辑
+          # curl -X POST your-webhook-url ...
