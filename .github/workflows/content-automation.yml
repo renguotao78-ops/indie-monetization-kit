@@ -1,48 +1,91 @@
-name: 💬 Content & Marketing Automation
+name: 💬 Content & Marketing Automation (Improved)
 
 on:
-  workflow_dispatch:   # 手动触发或定时触发
+  workflow_dispatch:
     inputs:
       topic:
-        description: '要生成的主题（例：从零变现系统）'
+        description: '想要生成的为主题（默认是推广这个变现工具包）'
         required: true
-        default: '从零开始的变现系统'
-  schedule:
-    - cron: '0 10 * * 1,4'   # 每周一、四上午 10点自动运行
+        default: '从零开始的变现工具包'
 
 jobs:
-  generate-and-post:
+  generate-sales-content:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate marketing content with AI
+      - name: Generate strong promotional content
         run: |
-          echo "🤖 正在为主题生成营销内容： ${{ github.event.inputs.topic || 'indie monetization' }}"
-          # 这里可以集成 OpenAI / Grok API 或使用预设的模板
-          cat > generated-content.md << EOF
-# 今天的变现提示
+          echo "🤖 正在为你生成销售和推广文案..."
+          
+          cat > generated-promotion.md << 'EOF'
+# 🚀 Indie Monetization Kit 推广文案
 
-**${{ github.event.inputs.topic || 'Indie Monetization Kit' }}**
+## 主题
+${{ github.event.inputs.topic || '从零开始的变现工具包' }}
 
-- 从零开始的第一步：选对路径
-- 用 GitHub Actions 自动化你的发布流程
-- 高毛利数字产品是最快的变现方式
+## X / Twitter 线程（可直接复制发布）
 
-更多详情请看：https://github.com/renguotao78-ops/indie-monetization-kit
+从零开始做第一个可以赚钱的系统，最难的是什么？
+
+不是写代码，而是找不到方向和工具。
+
+我现在把我正在用的完整变现工具包放出来了：
+
+✅ 即用的 GitHub Actions 自动化工作流
+✅ 自动打包、发布、通知客户
+✅ 内容自动生成推广
+
+这个工具包可以直接帮你减少 80% 的重复工作。
+
+有兴趣的可以去看看：
+https://github.com/renguotao78-ops/indie-monetization-kit
+
+#IndieHacker #变现 #GitHubActions
+
+---
+
+## 简短销售文案（适合 Gumroad / 小红书）
+
+**Indie Monetization Kit**
+
+从零开始的完整变现系统。
+
+包含多个即用的自动化工作流，帮你自动发布产品、生成推广内容、通知客户。
+
+适合想快速做出第一个数字产品并开始赚钱的人。
+
+现在就能开始使用！
+
+---
+
+## Reddit 帖子示例
+
+标题：我从零开始打造一个可以自动化变现的工具包
+
+内容：
+你好，我是一个从零开始做 indie hacker 的人。
+最近我把自己正在用的所有自动化工作流整理成了一个工具包，希望能帮到和我一样想快速变现的人。
+
+包含：
+- 自动化发布和交付
+- 自动生成推广内容
+- 完整的使用指南
+
+如果你也在找方向，可以去看看这个工具包。
+https://github.com/renguotao78-ops/indie-monetization-kit
+
 EOF
 
-      - name: Post to X / Twitter (example)
-        run: |
-          echo "📢 可在此步集成 Twitter API 或使用第三方工具自动发布"
-          # 示例命令（需要配置 secrets）
-          # npx twitter-post-cli "$(cat generated-content.md)"
-
-      - name: Upload generated content as artifact
+      - name: Upload ready-to-use promotion file
         uses: actions/upload-artifact@v4
         with:
-          name: marketing-content
-          path: generated-content.md
+          name: promotion-content
+          path: generated-promotion.md
 
       - name: Summary
-        run: echo "✅ 内容自动化已完成，可以手动复制到 X / 小红书等平台"
+        run: |
+          echo "✅ 销售推广文案已生成完成！"
+          echo "文件已保存为 generated-promotion.md"
+          echo "你可以直接下载并复制到 X、小红书、Reddit 等平台使用"}
