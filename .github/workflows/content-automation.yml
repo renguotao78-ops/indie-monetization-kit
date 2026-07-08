@@ -1,0 +1,48 @@
+name: 💬 Content & Marketing Automation
+
+on:
+  workflow_dispatch:   # 手动触发或定时触发
+    inputs:
+      topic:
+        description: '要生成的主题（例：从零变现系统）'
+        required: true
+        default: '从零开始的变现系统'
+  schedule:
+    - cron: '0 10 * * 1,4'   # 每周一、四上午 10点自动运行
+
+jobs:
+  generate-and-post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate marketing content with AI
+        run: |
+          echo "🤖 正在为主题生成营销内容： ${{ github.event.inputs.topic || 'indie monetization' }}"
+          # 这里可以集成 OpenAI / Grok API 或使用预设的模板
+          cat > generated-content.md << EOF
+# 今天的变现提示
+
+**${{ github.event.inputs.topic || 'Indie Monetization Kit' }}**
+
+- 从零开始的第一步：选对路径
+- 用 GitHub Actions 自动化你的发布流程
+- 高毛利数字产品是最快的变现方式
+
+更多详情请看：https://github.com/renguotao78-ops/indie-monetization-kit
+EOF
+
+      - name: Post to X / Twitter (example)
+        run: |
+          echo "📢 可在此步集成 Twitter API 或使用第三方工具自动发布"
+          # 示例命令（需要配置 secrets）
+          # npx twitter-post-cli "$(cat generated-content.md)"
+
+      - name: Upload generated content as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: marketing-content
+          path: generated-content.md
+
+      - name: Summary
+        run: echo "✅ 内容自动化已完成，可以手动复制到 X / 小红书等平台"
