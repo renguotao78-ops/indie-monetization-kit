@@ -1,0 +1,53 @@
+name: 🚀 Monetization Release Pipeline
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'   # 打版本 tag 触发，例如 v1.0.0
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create dist directory
+        run: mkdir -p dist
+
+      - name: Package product files
+        run: |
+          # 打包整个 Kit 佛用于销售
+          zip -r dist/indie-monetization-kit.zip . \
+            -x "*.git*" \
+            -x "node_modules/*" \
+            -x ".github/*"
+
+          # 可以在这里添加更多自定义打包逻辑
+          echo "变现产品已打包完成" > dist/build-info.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          files: |
+            dist/indie-monetization-kit.zip
+            dist/build-info.txt
+
+      - name: Notify customers (example webhook)
+        run: |
+          echo "📢 新版本已发布，可在此步添加 Gumroad / Discord / 邮件 webhook"
+          # 示例：
+          # curl -X POST "$CUSTOMER_WEBHOOK_URL" \
+          #   -H "Content-Type: application/json" \
+          #   -d '{"version":"'"${GITHUB_REF#refs/tags/}"'","download_url":"https://github.com/${{ github.repository }}/releases/latest"}'
+
+      - name: Summary
+        run: |
+          echo "✅ 变现产品自动化发布完成！"
+          echo "Release 链接： https://github.com/${{ github.repository }}/releases/tag/${GITHUB_REF#refs/tags/}"
